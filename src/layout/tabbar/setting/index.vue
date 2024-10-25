@@ -1,7 +1,7 @@
 <template>
 
     <el-button icon="Refresh" circle size="small" @click="refreshMain"></el-button>
-    <el-button icon="FullScreen" circle size="small"></el-button>
+    <el-button icon="FullScreen" circle size="small" @click="fullScreen"></el-button>
     <el-button icon="Setting" circle size="small"></el-button>
     <img src="public/logo.jpg" alt="" style="width: 24px;height: 24px;margin-left:10px;margin-right: 10px;" />
 
@@ -29,6 +29,15 @@ const refreshMain = () => {
     layoutSettingStore.changeRefresh(!layoutSettingStore.refresh)
 }
 
+const fullScreen = () => {
+    let fullScreen = document.fullscreenElement;
+    console.log(fullScreen);
+    if (!fullScreen) {
+        document.documentElement.requestFullscreen();
+    }else{
+        document.exitFullscreen();
+    }
+}
 
 </script>
 <style scoped lang="scss"></style>
