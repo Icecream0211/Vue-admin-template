@@ -1,17 +1,17 @@
 <template>
     <div class="layout_container">
-        <div class="layout_slider">]
+        <div class="layout_slider" :class="{fold: layoutSettingStore.fold? true : false}">
             <Logo></Logo>
             <el-scrollbar class="scrollbar">
-                <el-menu background-color="#001529" text-color="#fff" active-text-color="#409EFF" :default-active="$route.path" >
+                <el-menu :collapse="layoutSettingStore.fold?true:false" background-color="#001529" text-color="#fff" active-text-color="#409EFF" :default-active="$route.path" >
                     <Menu :menuList="useStore.menuRoutes"></Menu>
                 </el-menu>
             </el-scrollbar>
         </div>
-        <div class="layout_tabbar">
+        <div class="layout_tabbar" :class="{fold: layoutSettingStore.fold? true : false}">
             <Tabbar></Tabbar>
         </div>
-        <div class="layout_main">
+        <div class="layout_main" :class="{fold: layoutSettingStore.fold? true : false}">
             <Main></Main>
         </div>
     </div>
@@ -23,8 +23,11 @@ import Menu from '@/layout/menu/index.vue'
 import useUserStore from '@/store/modules/user';
 import Main from '@/layout/main/index.vue'
 import Tabbar from '@/layout/tabbar/index.vue'
+import useLayoutSettingStore from '@/store/modules/setting';
 
 let useStore = useUserStore()
+let layoutSettingStore = useLayoutSettingStore()
+
 
 const $route = useRoute()
 
@@ -38,15 +41,20 @@ const $route = useRoute()
 
     .layout_slider {
         width: $base-menu-width;
-        height: 100%;
-        background-color: $base-menu-background;
+        height: 100vh;
+        background: $base-menu-background;
         color: white;
+        transition: all 0.3s;
         .scrollbar {
-            width: $base-menu-width;
+            width: auto;
             height: calc(100vh - $base-menu-logo-hight);
             .el-menu{
                 border-right: none;
             }
+        }
+        &.fold{
+            width: $base-menu-min-width;
+
         }
     }
 
@@ -56,6 +64,11 @@ const $route = useRoute()
         height: $base-tabbar-height;
         top: 0px;
         left: $base-menu-width;
+        transition: all 0.3s;
+        &.fold{
+            width: calc(100vw - $base-menu-min-width);
+            left: $base-menu-min-width;
+        }
     }
 
     .layout_main {
@@ -67,6 +80,11 @@ const $route = useRoute()
         background-color: green;
         padding: 20px;
         overflow: auto;
+        transition: all 0.3s;
+        &.fold{
+            width: calc(100vw - $base-menu-min-width);
+            left: $base-menu-min-width;
+        }
     }
 }
 </style>
