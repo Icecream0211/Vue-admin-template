@@ -47,7 +47,7 @@ const fullScreen = () => {
 
 const logout = () => {
     userStore.userLogout();
-    $router.push('/login');
+    $router.push({path:'/login',query:{redirect:$router.currentRoute.value.path}});
 }
 
 </script>

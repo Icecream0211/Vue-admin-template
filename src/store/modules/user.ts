@@ -48,7 +48,7 @@ let useUserStore = defineStore('User', {
       this.token = '';
       this.username = '';
       this.avatar = '';
-      REMOVE_TOKEN('');
+      REMOVE_TOKEN();
     },
     async getUserInfo() {
       let result = await reqUserInfo();

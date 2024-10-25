@@ -12,16 +12,6 @@ import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { getTime } from '@/utils/time'
 // VerifyCode import
-import image1 from '@/assets/images/verifyCode/0050.png'
-import image2 from '@/assets/images/verifyCode/0254.png'
-import image3 from '@/assets/images/verifyCode/1580.png'
-import image4 from '@/assets/images/verifyCode/2927.png'
-import image5 from '@/assets/images/verifyCode/3812.png'
-import image6 from '@/assets/images/verifyCode/4294.png'
-import image7 from '@/assets/images/verifyCode/6061.png'
-import image8 from '@/assets/images/verifyCode/6102.png'
-import image9 from '@/assets/images/verifyCode/9322.png'
-import image10 from '@/assets/images/verifyCode/9041.png'
 
 let $router = useRouter()
 let loading = ref(false)
@@ -43,7 +33,12 @@ const login = async () => {
   loading.value = true
   try {
     await useStore.userLogin(loginForm)
-    $router.push('/')
+    let redirect: any = $router.currentRoute.value.query.redirect;
+    if (redirect) {
+      $router.push(redirect)
+    } else {
+      $router.push('/')
+    }
     ElNotification({
       type: 'success',
       message: '登陆成功',
@@ -73,7 +68,7 @@ const login = async () => {
 
 
 const validatorUserName = (rule: any, value: any, callBack: any) => {
-  console.log(rule,value)
+  console.log(rule, value)
   if (value.trim().length <= 0) {
     callBack(new Error('用户名必填'))
   }
@@ -81,7 +76,7 @@ const validatorUserName = (rule: any, value: any, callBack: any) => {
     callBack()
   } else if (value.trim().length >= 15) {
     callBack(new Error('用户名最长15位'))
-  }else {
+  } else {
     callBack(new Error('用户名字至少五位'))
   }
 }
@@ -102,10 +97,10 @@ const validatorPassword = (rule: any, value: any, callBack: any) => {
 
 const rules = {
   username: [
-    {  required: true ,trigger: 'change', validator: validatorUserName}
+    { required: true, trigger: 'change', validator: validatorUserName }
   ],
   password: [
-    { required: true, trigger: 'change',validator: validatorPassword}
+    { required: true, trigger: 'change', validator: validatorPassword }
   ]
 }
 
