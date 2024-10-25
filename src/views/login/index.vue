@@ -29,31 +29,7 @@ import useUserStore from '@/store/modules/user'
 let useStore = useUserStore()
 let loginForms = ref()
 
-const currentCodeImageIndex = ref(0)
 
-const codeImageUrls = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-  // 添加其他验证码图片的路径
-]
-
-const codeImageUrl = computed(() => {
-  return codeImageUrls[currentCodeImageIndex.value]
-})
-// console.log(codeImageUrls[0])
-
-const refreshCodeImages = () => {
-  currentCodeImageIndex.value =
-    (currentCodeImageIndex.value + 1) % codeImageUrls.length
-}
 const loginForm = reactive({
   username: 'admin',
   password: '123456',
@@ -82,15 +58,54 @@ const login = async () => {
     })
   }
 }
-
-const rules = {
-  username: [
+/**
+ * 
+ * username: [
     {trigger: 'blur',message: '请输入用户名',required:true},
     {required:true,min:5,max:10,message:"账号长度至少5位,最长10位",trigger:"change"}
   ],
   password: [
     {required:true,trigger: 'blur',message: '密码不能为空',},
     {required:true,min:6,max:15,message:"密码长度最少6,最长15位",trigger:"change"}
+  ]
+  简单校验
+ */
+
+
+const validatorUserName = (rule: any, value: any, callBack: any) => {
+  console.log(rule,value)
+  if (value.trim().length <= 0) {
+    callBack(new Error('用户名必填'))
+  }
+  if (value.trim().length >= 5 && value.trim().length <= 15) {
+    callBack()
+  } else if (value.trim().length >= 15) {
+    callBack(new Error('用户名最长15位'))
+  }else {
+    callBack(new Error('用户名字至少五位'))
+  }
+}
+
+const validatorPassword = (rule: any, value: any, callBack: any) => {
+  if (value.trim().length <= 0) {
+    callBack(new Error('密码必填'))
+  }
+  if (value.trim().length < 6) {
+    callBack(new Error('密码最短6位'))
+  }
+  if (value.trim().length >= 6 && value.trim().length <= 15) {
+    callBack()
+  } else if (value.trim().length >= 15) {
+    callBack(new Error('密码最长15位'))
+  }
+}
+
+const rules = {
+  username: [
+    {  required: true ,trigger: 'change', validator: validatorUserName}
+  ],
+  password: [
+    { required: true, trigger: 'change',validator: validatorPassword}
   ]
 }
 
@@ -105,34 +120,16 @@ const rules = {
           <h1>Hello</h1>
           <el-form :model="loginForm" :rules="rules" ref="loginForms">
             <el-form-item prop="username">
-              <el-input
-                :prefix-icon="User"
-                v-model="loginForm.username"
-                clearable
-                placeholder="Username"
-                size="large"
-              ></el-input>
+              <el-input :prefix-icon="User" v-model="loginForm.username" clearable placeholder="Username"
+                size="large"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input
-                type="password"
-                :prefix-icon="Lock"
-                show-password
-                v-model="loginForm.password"
-                size="large"
-                placeholder="Password"
-                clearable
-              ></el-input>
+              <el-input type="password" :prefix-icon="Lock" show-password v-model="loginForm.password" size="large"
+                placeholder="Password" clearable></el-input>
             </el-form-item>
           </el-form>
           <el-form-item>
-            <el-button
-              :loading="loading"
-              class="login_btn"
-              type="primary"
-              size="default"
-              @click="login"
-            >
+            <el-button :loading="loading" class="login_btn" type="primary" size="default" @click="login">
               登录
             </el-button>
           </el-form-item>
@@ -148,6 +145,7 @@ const rules = {
   background: url('@/assets/images/background.jpg') no-repeat;
   background-size: cover;
   position: fixed;
+
   .login_form {
     position: relative;
     width: 55%;
@@ -155,6 +153,7 @@ const rules = {
     top: 25vh;
     left: 10vw;
     padding: 10px;
+
     h1 {
       background: linear-gradient(to right, blue, rgb(35, 60, 70));
       -webkit-background-clip: text;
@@ -165,14 +164,17 @@ const rules = {
       margin-bottom: 40px;
       margin-top: -10px;
     }
+
     .login_btn {
       width: 100%;
     }
   }
 }
+
 .el-card {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
 :deep(.el-input-group__append, .el-input-group__prepend) {
   padding: 0;
 }
