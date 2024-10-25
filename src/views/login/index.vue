@@ -60,42 +60,10 @@ const loginForm = reactive({
   verifyCode: '',
 })
 
-const validatorUsername = (rule: any, value: any, callback: any) => {
-  if (value.length === 0) {
-    callback(new Error('请输入账号'))
-  } else {
-    callback()
-  }
-}
-
-const validatorPassword = (rule: any, value: any, callback: any) => {
-  if (value.length === 0) {
-    callback(new Error('请输入密码'))
-  } else if (value.length < 6 || value.length > 16) {
-    callback(new Error('密码应为6~16位的任意组合'))
-  } else {
-    callback()
-  }
-}
-
-const validatorVerifyCode = (rule: any, value: any, callback: any) => {
-  const tmp: { value: string } = codeImageUrl
-
-  const actualCode = tmp.value?.match(/\/(\d+)\.png$/)?.[1]
-
-  if (value.length === 0) {
-    callback(new Error('请输入验证码'))
-  } else if (value.length < 4) {
-    callback(new Error('请输入正确的验证码'))
-  } else if (actualCode !== value) {
-    callback(new Error('请输入正确的验证码'))
-  } else if (actualCode === value) {
-    callback()
-  }
-}
 
 const login = async () => {
-  await loginForms.value.validate()
+  let result = await loginForms.value.validate()
+  console.log(result)
   loading.value = true
   try {
     await useStore.userLogin(loginForm)
@@ -117,23 +85,13 @@ const login = async () => {
 
 const rules = {
   username: [
-    {
-      trigger: 'change',
-      validator: validatorUsername,
-    },
+    {trigger: 'blur',message: '请输入用户名',required:true},
+    {required:true,min:5,max:10,message:"账号长度至少5位,最长10位",trigger:"change"}
   ],
   password: [
-    {
-      trigger: 'change',
-      validator: validatorPassword,
-    },
-  ],
-  verifyCode: [
-    {
-      trigger: 'blur',
-      validator: validatorVerifyCode,
-    },
-  ],
+    {required:true,trigger: 'blur',message: '密码不能为空',},
+    {required:true,min:6,max:15,message:"密码长度最少6,最长15位",trigger:"change"}
+  ]
 }
 
 // ../../assets/images/0050.png
@@ -144,7 +102,7 @@ const rules = {
       <el-col :span="12" :xs="0"></el-col>
       <el-col :span="12" :xs="24">
         <el-card class="login_form">
-          <h1>Vue-Admin</h1>
+          <h1>Hello</h1>
           <el-form :model="loginForm" :rules="rules" ref="loginForms">
             <el-form-item prop="username">
               <el-input
@@ -165,24 +123,6 @@ const rules = {
                 placeholder="Password"
                 clearable
               ></el-input>
-            </el-form-item>
-            <el-form-item prop="verifyCode">
-              <el-input
-                :prefix-icon="Warning"
-                show-password
-                v-model="loginForm.verifyCode"
-                placeholder="VerifyCode"
-                size="large"
-              >
-                <template #append>
-                  <img
-                    :src="(codeImageUrl as unknown as string)"
-                    alt="验证码"
-                    style="cursor: pointer"
-                    @click="refreshCodeImages"
-                  />
-                </template>
-              </el-input>
             </el-form-item>
           </el-form>
           <el-form-item>
@@ -211,6 +151,7 @@ const rules = {
   .login_form {
     position: relative;
     width: 55%;
+    background-image: url(@/assets/images/login_form.png);
     top: 25vh;
     left: 10vw;
     padding: 10px;
@@ -219,7 +160,7 @@ const rules = {
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-size: 40px;
-      text-align: center;
+      text-align: left;
       font-weight: 700;
       margin-bottom: 40px;
       margin-top: -10px;
