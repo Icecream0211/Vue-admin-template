@@ -10,6 +10,8 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import useUserStore from '@/store/modules/user'
+
 let request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 5000,
@@ -17,6 +19,11 @@ let request = axios.create({
 
 request.interceptors.request.use(
   (config) => {
+    let userStore = useUserStore();
+
+    if (userStore.token) {
+      config.headers.token = userStore.token
+    }
     nprogress.start()
     return config
   },
