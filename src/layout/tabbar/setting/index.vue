@@ -1,6 +1,6 @@
 <template>
 
-    <el-button icon="Refresh" circle size="small"></el-button>
+    <el-button icon="Refresh" circle size="small" @click="refreshMain"></el-button>
     <el-button icon="FullScreen" circle size="small"></el-button>
     <el-button icon="Setting" circle size="small"></el-button>
     <img src="public/logo.jpg" alt="" style="width: 24px;height: 24px;margin-left:10px;margin-right: 10px;" />
@@ -21,5 +21,14 @@
 
 </template>
 <script setup lang="ts">
+import useLayoutSettingStore from '@/store/modules/setting';
+
+let layoutSettingStore = useLayoutSettingStore();
+
+const refreshMain = () => {
+    layoutSettingStore.changeRefresh(!layoutSettingStore.refresh)
+}
+
+
 </script>
 <style scoped lang="scss"></style>

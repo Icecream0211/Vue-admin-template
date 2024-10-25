@@ -15,15 +15,10 @@
 
 </template>
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import useLayoutSettingStore from "@/store/modules/setting";
-
-let $router = useRouter();
-
-
 const settingStore = useLayoutSettingStore();
 const changeIcon = () => {
-    settingStore.fold = !settingStore.fold
+    settingStore.changeFold(!settingStore.fold)
 };
 
 </script>
