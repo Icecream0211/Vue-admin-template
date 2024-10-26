@@ -10,6 +10,7 @@ import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
 import type { UserState } from './types/types'
 import { SET_TOKEN, GET_TOKEN, REMOVE_TOKEN } from '@/utils/token'
 import { constantRoute } from '@/router/routes'
+import {LoginResponseData,UserInfoResponseData}  from '@/api/user/type'
 
 let useUserStore = defineStore('User', {
   // 小仓库存储数据的地方
@@ -26,7 +27,7 @@ let useUserStore = defineStore('User', {
   actions: {
     //用户登录方法
     async userLogin(data: any) {
-      let res: any = await reqLogin(data)
+      let res: LoginResponseData = await reqLogin(data)
       console.log("login--resp",res)
       // success=>token
       // error=>error.message
@@ -36,7 +37,7 @@ let useUserStore = defineStore('User', {
         SET_TOKEN(res.data)
         return 'ok'
       } else {
-        return Promise.reject(new Error(res.data?.message))
+        return Promise.reject(new Error(res.message))
       }
     },
     async userLogout() {
@@ -52,14 +53,14 @@ let useUserStore = defineStore('User', {
       return Promise.reject(new Error(result.message))
     },
     async getUserInfo() {
-      let result = await reqUserInfo();
+      let result:UserInfoResponseData = await reqUserInfo();
       console.log("获取用户信息结果", result);
       if (result.code === 200) {
         this.username = result.data.name;
         this.avatar = result.data.avatar;
         return 'ok';
       } else {
-        return Promise.reject("用户信息获取失败");
+        return Promise.reject(result.message);
       }
     },
   }

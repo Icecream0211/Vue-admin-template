@@ -7,6 +7,7 @@
  */
 // 统一管理用户相关接口
 import request from '@/utils/request'
+import {LoginFormData,LoginResponseData,UserInfoResponseData}  from './type'
 
 enum API {
   // 登录接口
@@ -18,8 +19,8 @@ enum API {
 };
 
 
-export const reqLogin =  (data:any) => request.post<any,any>(API.LOGIN_URL,data);
+export const reqLogin =  (data:LoginFormData) => request.post<any,LoginResponseData>(API.LOGIN_URL,data);
 
-export const reqUserInfo = () => request.get<any,any>(API.USERINFO_URL); 
+export const reqUserInfo = () => request.get<any,UserInfoResponseData>(API.USERINFO_URL); 
 
 export const reqLogout = () => request.post<any,any>(API.LOGOUT_URL);
