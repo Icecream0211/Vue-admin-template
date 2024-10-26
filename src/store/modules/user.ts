@@ -6,10 +6,9 @@
  * @LastEditTime: 2023-05-20 16:31:38
  */
 import { defineStore } from 'pinia'
-import { reqLogin, reqUserInfo } from '@/api/user'
-import type { LoginForm, LoginResponseData } from '@/api/user/type'
+import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
 import type { UserState } from './types/types'
-import { SET_TOKEN, GET_TOKEN,REMOVE_TOKEN } from '@/utils/token'
+import { SET_TOKEN, GET_TOKEN, REMOVE_TOKEN } from '@/utils/token'
 import { constantRoute } from '@/router/routes'
 
 let useUserStore = defineStore('User', {
@@ -18,64 +17,49 @@ let useUserStore = defineStore('User', {
     return {
       token: GET_TOKEN()!,
       menuRoutes: constantRoute,
-      username:'',
-      avatar:''
+      username: '',
+      avatar: ''
 
     }
   },
   // 异步|逻辑的地方
   actions: {
     //用户登录方法
-    async userLogin(data: LoginForm) {
-      let res: LoginResponseData = await reqLogin(data)
-      console.log(res)
+    async userLogin(data: any) {
+      let res: any = await reqLogin(data)
+      console.log("login--resp",res)
       // success=>token
       // error=>error.message
       if (res.code === 200) {
-        this.token = res.data?.token as string
+        this.token = res.data;
         // 持久化
-        SET_TOKEN(res.data?.token as string)
+        SET_TOKEN(res.data)
         return 'ok'
       } else {
         return Promise.reject(new Error(res.data?.message))
       }
     },
     async userLogout() {
-      this.token = '';
-      this.username = '';
-      this.avatar = '';
-      REMOVE_TOKEN();
+      let result = await reqLogout();
+      console.log("退出登录", result);
+      if(result.code === 200){
+        this.token = '';
+        this.username = '';
+        this.avatar = '';
+        REMOVE_TOKEN();
+        return 'ok';
+      }
+      return Promise.reject(new Error(result.message))
     },
     async getUserInfo() {
       let result = await reqUserInfo();
-      console.log("获取用户信息结果",result);
+      console.log("获取用户信息结果", result);
       if (result.code === 200) {
-        this.username = result.data?.checkUser?.username;
-        this.avatar = result.data?.checkUser?.avatar;
+        this.username = result.data.name;
+        this.avatar = result.data.avatar;
         return 'ok';
-      }else{
-        return Promise.reject("用户信息获取失败");
-      }
-     },
-     async userInfo() {
-      const res: userInfoResponseData = await reqUserInfo()
-
-      if (res.code === 200) {
-        this.username = res.data.name as string
-        this.avatar = res.data.avatar as string
-
-        const userAsyncRoute = filterAsyncRoute(
-          cloneDeep(asyncRoute),
-          res.data.routes,
-        )
-        this.menuRoutes = [...constantRoute, ...userAsyncRoute, anyRoute]
-        dynamicRoutes = [...userAsyncRoute, anyRoute] // 记录动态添加的路由
-        dynamicRoutes.forEach((route) => {
-          router.addRoute(route) // 动态添加路由
-        })
-        return 'ok'
       } else {
-        return Promise.reject(new Error(res.message))
+        return Promise.reject("用户信息获取失败");
       }
     },
   }
