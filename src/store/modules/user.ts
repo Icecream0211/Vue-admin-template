@@ -16,16 +16,12 @@ let useUserStore = defineStore('User', {
   // 小仓库存储数据的地方
   state: (): UserState => {
     return {
-      token: GET_TOKEN() as unknown as string,
+      token: GET_TOKEN()!,
       menuRoutes: constantRoute,
       username:'',
       avatar:''
 
     }
-  },
-  getters: {
-   
-    
   },
   // 异步|逻辑的地方
   actions: {
@@ -52,13 +48,36 @@ let useUserStore = defineStore('User', {
     },
     async getUserInfo() {
       let result = await reqUserInfo();
+      console.log("获取用户信息结果",result);
       if (result.code === 200) {
-        this.username = result.data?.checkUser?.username
-        this.avatar = result.data?.checkUser?.avatar
+        this.username = result.data?.checkUser?.username;
+        this.avatar = result.data?.checkUser?.avatar;
+        return 'ok';
       }else{
-
+        return Promise.reject("用户信息获取失败");
       }
-     }
+     },
+     async userInfo() {
+      const res: userInfoResponseData = await reqUserInfo()
+
+      if (res.code === 200) {
+        this.username = res.data.name as string
+        this.avatar = res.data.avatar as string
+
+        const userAsyncRoute = filterAsyncRoute(
+          cloneDeep(asyncRoute),
+          res.data.routes,
+        )
+        this.menuRoutes = [...constantRoute, ...userAsyncRoute, anyRoute]
+        dynamicRoutes = [...userAsyncRoute, anyRoute] // 记录动态添加的路由
+        dynamicRoutes.forEach((route) => {
+          router.addRoute(route) // 动态添加路由
+        })
+        return 'ok'
+      } else {
+        return Promise.reject(new Error(res.message))
+      }
+    },
   }
 })
 
