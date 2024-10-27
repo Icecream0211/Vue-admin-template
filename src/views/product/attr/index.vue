@@ -61,7 +61,7 @@
     </el-card>
 </template>
 <script setup lang="ts">
-import { nextTick, reactive, ref, watch } from 'vue'
+import { nextTick, reactive, ref, watch,onBeforeUnmount} from 'vue'
 import useCategoryStore from '@/store/modules/product';
 import { reqAddOrUpdateAttr, reqAllAttrInfo,reqDeleteAttr } from '@/api/product/attr';
 import { Attr, AttrValue } from '@/api/product/attr/type';
@@ -111,6 +111,12 @@ const updateAttr = (row:any,$index:number) => {
     scene.value = 1;
     
 }
+
+
+onBeforeUnmount(() => {
+  // 取消全局事件的监听
+  categoryStore.$reset();
+})
 
 const getAttrList = async (c1Id: number | string, c2Id: number | string, c3Id: number | string) => {
     console.log("获取属性列表")
