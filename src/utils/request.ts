@@ -43,7 +43,18 @@ request.interceptors.response.use(
   },
   (error) => {
     let message = ''
-    console.log("error",error)
+    console.log("error", error)
+
+    if (!error.response) {
+      message = error.message;
+      ElMessage({
+        type: 'error',
+        message,
+      })
+      return Promise.reject(error);
+    }
+
+
     let status = error.response.status
     switch (status) {
       // 401: 未登录
