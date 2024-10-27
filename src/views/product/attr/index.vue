@@ -4,6 +4,7 @@
     <el-card style="margin-top: 10px;">
         <div v-show="scene == 0">
             <el-button type="primary" icon="Plus" :disabled="!categoryStore.c3Id" @click="addAttr">添加平台属性</el-button>
+            <el-button type="primary" icon="Plus"  @click="open2">添加平台属性</el-button>
 
             <el-table border style="margin: 10px 0px;" :data="attrList">
 
@@ -57,7 +58,6 @@
     </el-card>
 </template>
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
 import { reactive, ref, watch } from 'vue'
 import useCategoryStore from '@/store/modules/product';
 import { reqAddOrUpdateAttr, reqAllAttrInfo,reqDeleteAttr } from '@/api/product/attr';
@@ -131,7 +131,6 @@ const deleteAttr = async (id: number) => {
         ElMessage({ type: 'fail', message: '删除失败' });
      }
 }
-
 
 const saveAttr2 = async () => {
     let response = await reqAddOrUpdateAttr(attrParams);

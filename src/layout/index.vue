@@ -47,7 +47,7 @@ const $route = useRoute()
         transition: all 0.3s;
         .scrollbar {
             width: auto;
-            height: calc(100vh - $base-menu-logo-hight);
+             height: calc(100vh - $base-menu-logo-hight);
             .el-menu{
                 border-right: none;
             }
