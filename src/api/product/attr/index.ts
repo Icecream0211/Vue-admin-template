@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { CategoryResponseData } from "./type";
+import type { CategoryResponseData,AttrResponseData,Attr } from "./type";
 
 
 enum API {
@@ -12,6 +12,7 @@ enum API {
   //根据一级分类id获取一级分类数据
   ATTR_INFO_URL = '/admin/product/attrInfoList/',
   Add_Or_Update_Attr = '/admin/product/saveAttrInfo',
+  DELETE_ATTR_URL = '/admin/product/deleteAttr/',
 };
 
 
@@ -22,12 +23,18 @@ const reqC2 = (c1Id:number|string) => request.get<any,CategoryResponseData>(API.
 
 const reqC3 = (c2Id:number|string) => request.get<any,CategoryResponseData>(API.CATEGORY3_URL+c2Id);
 
-const reqAllAttrInfo = (c1Id:number|string,c2Id:number|string,c3Id:number|string) => request.get<any,CategoryResponseData>(API.ATTR_INFO_URL+c1Id+'/'+c2Id+'/'+c3Id)
+const reqAllAttrInfo = (c1Id:number|string,c2Id:number|string,c3Id:number|string) => request.get<any,AttrResponseData>(API.ATTR_INFO_URL+c1Id+'/'+c2Id+'/'+c3Id)
 
+
+const reqAddOrUpdateAttr = (data:Attr) => request.post<any,any>(API.Add_Or_Update_Attr,data);
+
+const reqDeleteAttr = (attrId:number) => request.delete<any,any>(API.DELETE_ATTR_URL+attrId)
 
 export {
   reqC1,
   reqC2,
   reqC3,
-  reqAllAttrInfo
+  reqAllAttrInfo,
+  reqAddOrUpdateAttr,
+  reqDeleteAttr
 };

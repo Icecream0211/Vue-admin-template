@@ -14,7 +14,7 @@ import useUserStore from '@/store/modules/user'
 
 let request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
-  timeout: 5000,
+  timeout: 50000,
 })
 
 request.interceptors.request.use(
@@ -43,6 +43,7 @@ request.interceptors.response.use(
   },
   (error) => {
     let message = ''
+    console.log("error",error)
     let status = error.response.status
     switch (status) {
       // 401: 未登录
