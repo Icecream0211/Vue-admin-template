@@ -1,6 +1,6 @@
 <template>
 
-
+    <Category></Category>
     <el-card style="margin-top: 10px;">
         <el-button type="primary" icon="Plus">添加平台属性</el-button>
 
