@@ -51,8 +51,14 @@ export default ({ command,mode }: ConfigEnv): UserConfigExport => {
           target: env.VITE_SERVE,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        "/fp":{
+          target:"http://39.98.123.211:8510",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/fp/, ''),
         }
       },
+      
     },
   }
 }
