@@ -3,16 +3,20 @@
     <el-card style="margin:10px 0">
 
         <div v-show="scene == 0">
-            <el-button type="primary" icon="Plus" :disabled="!categoryStore.c3Id" @click="addSpu" plain>添加SPU</el-button>
+            <el-button type="primary" icon="Plus" :disabled="!categoryStore.c3Id" @click="addSpu"
+                plain>添加SPU</el-button>
             <el-table :data="spuList" border style="margin: 5px 0px;">
                 <el-table-column label="序号" type="index" width="80px"></el-table-column>
                 <el-table-column label="SPU名称" prop="spuName" width="120px"></el-table-column>
                 <el-table-column label="SPU描述" prop="description" show-overflow-tooltip></el-table-column>
                 <el-table-column label="操作" width="210px">
                     <template v-slot="{ row, $index }">
-                        <el-button type="success" icon="Plus" title="添加SKU" size="small"></el-button>
-                        <el-button type="primary" icon="Edit" @click="updateSpu(row)" title="修改SPU" size="small"></el-button>
-                        <el-button type="primary" icon="View" title="查看SKU" size="small"></el-button>
+                        <el-button type="success" icon="Plus" title="添加SKU" size="small"
+                            @click="addSku(row)"></el-button>
+                        <el-button type="primary" icon="Edit" @click="updateSpu(row)" title="修改SPU"
+                            size="small"></el-button>
+                        <el-button type="primary" icon="View" title="查看SKU" size="small"
+                            @click="findSku(row)"></el-button>
                         <el-button type="warning" icon="Delete" title="上传图片" size="small"></el-button>
                     </template>
 
@@ -26,9 +30,25 @@
                 @size-change="handleSizeChange" @current-change="getSPU" />
 
         </div>
-        
+
         <SpuForm ref="spu" v-show="scene == 1" @changeScene="handleSceneChange"></SpuForm>
-        <SkuForm v-show="scene == 2"></SkuForm>
+        <SkuForm ref="sku" v-show="scene == 2" @changeScene="handleSceneChange"></SkuForm>
+
+
+
+        <el-dialog v-model="dialogVisible">
+            <el-table :data="skuArr">
+                <el-table-column label="SKU名称" prop="skuName"></el-table-column>
+                <el-table-column label="SKU价格" prop="price"></el-table-column>
+                <el-table-column label="sk重量" prop="weight"></el-table-column>
+                <el-table-column label="图片" >
+                    <template v-slot="{row}">
+                        <img :src="row.skuDefaultImg" alt="" style="width: 100px;height: 100px">
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
+
     </el-card>
 
 
@@ -36,14 +56,15 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import useCategoryStore from '@/store/modules/product';
-import { reqHasSpu } from '@/api/product/spu/index';
-import { HasSpuResponseData, SpuData } from '@/api/product/spu/type';
+import { reqHasSpu, reqSkuList } from '@/api/product/spu/index';
+import { HasSpuResponseData, SpuData, SkuData } from '@/api/product/spu/type';
 import SkuForm from './skuForm.vue';
 import SpuForm from './spuForm.vue';
 
 const spuList = ref<SpuData[]>([]);
 
 let spu = ref<any>();
+let sku = ref<any>();
 
 
 let scene = ref(0);//0 显示现有列表；1：添加新增SPU ;2：添加修改SPU
@@ -86,21 +107,41 @@ const addSpu = () => {
     scene.value = 1;
     spu.value.initAddSpu(categoryStore.c3Id);
 }
-const updateSpu = (row:SpuData)=>{
+const updateSpu = (row: SpuData) => {
     scene.value = 1;
     //调用子组件实例方法
     spu.value.initHasSpuData(row);
 }
 
 
-const handleSceneChange = (obj:any) => {
-     scene.value = obj.flag;
-     if(obj.params=='update'){
+const handleSceneChange = (obj: any) => {
+    scene.value = obj.flag;
+    if (obj.params == 'update') {
         //修改
         getSPU(pagination.currentPage);
-     }else{
+    } else {
         getSPU();
-     }
+    }
+}
+
+
+let skuArr = ref<SkuData[]>([]);
+let dialogVisible = ref(false);
+
+
+
+const findSku = async (row: SpuData) => {
+    let result = await reqSkuList(row.id as number);
+    console.log(result);
+    if (result.code == 200) {
+        skuArr.value = result.data;
+        dialogVisible.value = true;
+    }
+}
+
+const addSku = (row: SpuData) => {
+    scene.value = 2;
+    sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, categoryStore.c3Id, row);
 }
 
 

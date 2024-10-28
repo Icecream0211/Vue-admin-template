@@ -1,29 +1,29 @@
 export interface ResponseData {
-  code: number;
-  message?: string;
-  ok: boolean;
+    code: number;
+    message?: string;
+    ok: boolean;
 }
 
 
-export interface SpuData{
-    id?:number;
-    spuName:string;
-    description:string;
-    category3Id:number|string;
-    tmId:number|string;
-    spuSaleAttrList:null|SpuSaleAttr[];
-    spuImageList:null|SpuImage[];
+export interface SpuData {
+    id?: number;
+    spuName: string;
+    description: string;
+    category3Id: number | string;
+    tmId: number | string;
+    spuSaleAttrList: null | SpuSaleAttr[];
+    spuImageList: null | SpuImage[];
 }
 
 
-export interface HasSpuResponseData extends ResponseData{
-    data:{
-        records:SpuData[],
-        total:number,
-        size:number,
-        current:number,
-        searchCount:boolean,
-        pages:number
+export interface HasSpuResponseData extends ResponseData {
+    data: {
+        records: SpuData[],
+        total: number,
+        size: number,
+        current: number,
+        searchCount: boolean,
+        pages: number
     }
 }
 
@@ -42,55 +42,94 @@ export interface AllTradeMarkResponse extends ResponseData {
 
 
 export interface SpuImage {
-     id?:number,
-     imgName:string,
-     imgUrl:string,
-     createTime?:string,
-     updateTime?:string,
-     spuId?:number,
-     name?:string,
-     url?:string
-} 
+    id?: number,
+    imgName: string,
+    imgUrl: string,
+    createTime?: string,
+    updateTime?: string,
+    spuId?: number,
+    name?: string,
+    url?: string
+}
 
 export interface SpuImageListResponse extends ResponseData {
-    data:SpuImage[]
+    data: SpuImage[]
 }
 
 
 
-export interface SpuSaleAttrValue{
-        baseSaleAttrId: number|string,
-        id?: number,
-        isChecked?:String,
-        saleAttrName?:string
-        saleAttrValueName: string
-        spuId?: number
+export interface SpuSaleAttrValue {
+    baseSaleAttrId: number | string,
+    id?: number,
+    isChecked?: String,
+    saleAttrName?: string
+    saleAttrValueName: string
+    spuId?: number
 }
 
 
-export interface SpuSaleAttr{
-    baseSaleAttrId: number|string,
+export interface SpuSaleAttr {
+    baseSaleAttrId: number | string,
     id?: number,
     saleAttrName: string,
     spuId?: number,
     spuSaleAttrValueList: SpuSaleAttrValue[],
-    isChecked?:String|null,
-    flag?:boolean,
-    saleAttrValue?:string
+    isChecked?: String | null,
+    flag?: boolean,
+    saleAttrValue?: string
 }
 
-export interface SpuSaleAttrResponse extends ResponseData{
-    data:SpuSaleAttr[]
+export interface SpuSaleAttrResponse extends ResponseData {
+    data: SpuSaleAttr[]
 }
 
 
-export interface HasSaleAttr{
-    id:number,
-    name:string
+export interface HasSaleAttr {
+    id: number,
+    name: string
 }
 
-export interface HasSaleAttrResponse extends ResponseData{
-    data:HasSaleAttr[]
+export interface HasSaleAttrResponse extends ResponseData {
+    data: HasSaleAttr[]
+}
+
+
+
+export interface SkuAttr {
+    attrId: number | string,
+    valueId: number | string
+}
+
+
+
+export interface SkuSaleAttr {
+    saleAttrValueId: number | string,
+    saleAttrId: number | string
+}
+
+export interface SkuData {
+    category3Id: number | string,
+    spuId: number | string,
+    tmId: number | string,
+    weight: string | number,
+    price: number | string,
+    skuAttrValueList?: SkuAttr[],
+    skuDesc: string,
+
+    skuName: string,
+
+
+    skuDefaultImg: string,
+    skuImageList?: [],
+    skuSaleAttrValueList?: SkuSaleAttr[]
+}
+
+
+
+
+
+export  interface SkuInfoData extends ResponseData{
+    data: SkuData[]
 }
 
 
