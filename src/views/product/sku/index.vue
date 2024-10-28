@@ -22,7 +22,11 @@
             size="small" @click="upOrCancelToSale(row)"></el-button>
           <el-button type="primary" icon="Edit" size="small" @click="editSku(row)"></el-button>
           <el-button type="primary" icon="InfoFilled" size="small" @click="infoSku(row)"></el-button>
-          <el-button type="danger" icon="Delete" size="small" @click="deleteSku(row)"></el-button>
+          <el-popconfirm title="确定删除吗？" width="260px" @confirm="deleteSku(row)">
+            <template #reference>
+              <el-button type="danger" icon="Delete" size="small"></el-button>
+            </template>
+          </el-popconfirm>
         </template>
 
       </el-table-column>
@@ -53,7 +57,7 @@
 
         <el-row style="margin:10px 0px">
           <el-col :span="6">价格</el-col>
-          <el-col :span="18">{{ skuInfo.skuDesc }}</el-col>
+          <el-col :span="18">{{ skuInfo.price }}</el-col>
         </el-row>
 
 
@@ -78,7 +82,7 @@
           <el-col :span="18">
             <el-carousel :interval="4000" type="card" height="200px">
               <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item">
-                <img :src="item.imgUrl" alt="" style="width:100%;height:100%">          
+                <img :src="item.imgUrl" alt="" style="width:100%;height:100%">
               </el-carousel-item>
             </el-carousel>
           </el-col>
@@ -90,8 +94,8 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue';
-import { reqSkuList, reqDeleteSku, reqCancelSale, reqOnSale,reqSkuInfo } from '@/api/product/sku/index.ts';
-import { SkuResponseData, SkuData,SkuInfoData } from '@/api/product/sku/type';
+import { reqSkuList, reqDeleteSku, reqCancelSale, reqOnSale, reqSkuInfo } from '@/api/product/sku/index.ts';
+import { SkuResponseData, SkuData, SkuInfoData } from '@/api/product/sku/type';
 
 let pagination = reactive({
   currentPage: 1,
@@ -127,6 +131,12 @@ const getSku = async (currentPage = 1) => {
 
 const deleteSku = async (row: any) => {
   let result = await reqDeleteSku(row.id);
+  if (result.code == 200) {
+    ElMessage.success("删除成功");
+    getSku();
+  } else {
+    ElMessage.error("删除失败");
+  }
 }
 
 const upOrCancelToSale = async (row: SkuData) => {
@@ -158,7 +168,7 @@ const upOrCancelToSale = async (row: SkuData) => {
 const skuInfo = ref<SkuData>({
 });
 const infoSku = async (row: SkuData) => {
-  let result:SkuInfoData = await reqSkuInfo(row.id as number);
+  let result: SkuInfoData = await reqSkuInfo(row.id as number);
   if (result.code == 200) {
     drawer.value = true;
     skuInfo.value = result.data;

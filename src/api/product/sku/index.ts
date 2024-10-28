@@ -8,6 +8,7 @@ enum API {
     SKU_ON_SALE_URL = "/admin/product/onSale/",
     SKU_CANCEL_SALE_URL = "/admin/product/cancelSale/",
     SKU_INFO_URL = "/admin/product/getSkuInfo/",
+    DELETE_SKU_URL = "/admin/product/deleteSku/"
 }
 
 
@@ -15,7 +16,7 @@ enum API {
 export const reqSkuList = (page: number, limit: number) => request.get<any, SkuResponseData>(API.SKU_LIST_URL + `${page}/${limit}`);
 
 
-export const reqDeleteSku = (id: number) => request.delete<any, any>(`/admin/product/deleteSku/${id}`);
+export const reqDeleteSku = (id: number) => request.delete<any, any>(API.DELETE_SKU_URL+`${id}`);
 
 
 
