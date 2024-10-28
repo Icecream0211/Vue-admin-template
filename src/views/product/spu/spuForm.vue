@@ -79,7 +79,7 @@ let $emit = defineEmits(['changeScene']);
 
 
 const cancel = () => {
-    $emit('changeScene', 0);
+    $emit('changeScene', {flag:0,params:"update"});
 }
 
 
