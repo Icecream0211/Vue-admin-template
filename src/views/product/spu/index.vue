@@ -61,7 +61,7 @@
 
 </template>
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch ,onBeforeUnmount} from 'vue'
 import useCategoryStore from '@/store/modules/product';
 import { reqHasSpu, reqSkuList, reqDeleteSpu } from '@/api/product/spu/index';
 import { HasSpuResponseData, SpuData, SkuData } from '@/api/product/spu/type';
@@ -161,6 +161,11 @@ const deleteSpu = async (row: SpuData) => {
         ElMessage.error('删除失败');
     }
 }
+
+
+onBeforeUnmount(() => {
+    categoryStore.$reset();
+})
 
 </script>
 <style scoped lang="scss"></style>
