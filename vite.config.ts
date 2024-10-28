@@ -56,6 +56,11 @@ export default ({ command,mode }: ConfigEnv): UserConfigExport => {
           target:"http://39.98.123.211:8510",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/fp/, ''),
+        },
+        "/spusaleattr":{
+          target:"http://39.98.123.211:8510",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/spusaleattr/, ''),
         }
       },
       
