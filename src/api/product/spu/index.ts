@@ -14,6 +14,7 @@ enum API {
     UPDATE_SPU_URL = '/admin/product/updateSpuInfo',
     AddSKU_URL = '/admin/product/saveSkuInfo',
     GET_SKU_URL = '/admin/product/findBySpuId/',
+    DELETE_SPU_URL = '/admin/product/deleteSpu/',
 }
 
 
@@ -50,3 +51,6 @@ export const reqAddSku = (data:SkuData)=>request.post<any,any>(API.AddSKU_URL,da
 
 
 export const reqSkuList = (spuId:number|string) => request.get<any,SkuInfoData>(API.GET_SKU_URL+spuId);
+
+
+export const reqDeleteSpu = (id: number|string) => request.delete<any, any>(API.DELETE_SPU_URL + `/${id}`);

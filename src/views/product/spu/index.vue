@@ -17,7 +17,14 @@
                             size="small"></el-button>
                         <el-button type="primary" icon="View" title="查看SKU" size="small"
                             @click="findSku(row)"></el-button>
-                        <el-button type="warning" icon="Delete" title="上传图片" size="small"></el-button>
+               
+
+                        <el-popconfirm :title="`确定要删除${row.spuName}嘛?`" icon="Delete" @confirm="deleteSpu(row)" width="260px">
+                            <template #reference>
+                                <el-button type="primary" size="small" icon="Delete"></el-button>
+                            </template>
+                        </el-popconfirm>
+
                     </template>
 
                 </el-table-column>
@@ -41,8 +48,8 @@
                 <el-table-column label="SKU名称" prop="skuName"></el-table-column>
                 <el-table-column label="SKU价格" prop="price"></el-table-column>
                 <el-table-column label="sk重量" prop="weight"></el-table-column>
-                <el-table-column label="图片" >
-                    <template v-slot="{row}">
+                <el-table-column label="图片">
+                    <template v-slot="{ row }">
                         <img :src="row.skuDefaultImg" alt="" style="width: 100px;height: 100px">
                     </template>
                 </el-table-column>
@@ -56,7 +63,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import useCategoryStore from '@/store/modules/product';
-import { reqHasSpu, reqSkuList } from '@/api/product/spu/index';
+import { reqHasSpu, reqSkuList, reqDeleteSpu } from '@/api/product/spu/index';
 import { HasSpuResponseData, SpuData, SkuData } from '@/api/product/spu/type';
 import SkuForm from './skuForm.vue';
 import SpuForm from './spuForm.vue';
@@ -144,6 +151,16 @@ const addSku = (row: SpuData) => {
     sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, categoryStore.c3Id, row);
 }
 
+
+const deleteSpu = async (row: SpuData) => {
+    let response = await reqDeleteSpu(row.id as number);
+    if (response.code == 200) {
+        ElMessage.success('删除成功');
+        getSPU();
+    } else {
+        ElMessage.error('删除失败');
+    }
+}
 
 </script>
 <style scoped lang="scss"></style>
