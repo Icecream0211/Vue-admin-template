@@ -133,7 +133,7 @@ const deleteSku = async (row: any) => {
   let result = await reqDeleteSku(row.id);
   if (result.code == 200) {
     ElMessage.success("删除成功");
-    getSku();
+    getSku(skuArr.value.length>1?pagination.currentPage:pagination.currentPage-1);
   } else {
     ElMessage.error("删除失败");
   }
