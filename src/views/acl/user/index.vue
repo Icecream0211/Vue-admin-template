@@ -12,8 +12,8 @@
     </el-card>
     <el-card style="margin:10px 0">
         <el-button type="primary" icon="Plus" size="small" @click="addUser">添加</el-button>
-        <el-button type="danger" icon="Delete" size="small">批量删除</el-button>
-        <el-table :data="userList" border style="margin: 10px 0px;">
+        <el-button type="danger" icon="Delete" size="small" @click="batchDeleteUser">批量删除</el-button>
+        <el-table :data="userList" border style="margin: 10px 0px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="80" />
             <el-table-column prop="id" label="#" width="80" align="center" type="index" />
             <el-table-column prop="id" label="Id" align="center" width="120" />
@@ -32,7 +32,7 @@
                 <template #="{ row, $index }">
                     <el-button type="primary" icon="User" size="small" @click="assignRole(row)">分配角色</el-button>
                     <el-button type="primary" icon="Edit" size="small" @click="editUser(row)">编辑</el-button>
-                    <el-button type="primary" icon="Delete" size="small" @click="">删除</el-button>
+                    <el-button type="primary" icon="Delete" size="small" @click="deleteUser(row.id)">删除</el-button>
 
                 </template>
             </el-table-column>
@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 
-import { reqUserList, reqAddOrUpdateUser,reqUserAllRole,reqAssignRoles } from '@/api/acl/user'
+import { reqUserList, reqAddOrUpdateUser,reqUserAllRole,reqAssignRoles,reqDeleteUser,reqBatchDeleteUser } from '@/api/acl/user'
 import { UserSearch, UserListResponse, User, AllRoleResponseData, RoleData,AssignRoleData } from '@/api/acl/user/type.ts'
 import type { FormInstance } from 'element-plus'
 import { nextTick } from 'vue';
@@ -280,10 +280,12 @@ const cancelAssign =  async () => {
     assignRoleDrawer.value = false;
 }
 const confirmAssign = async() => {
-    const assignRoleIds = assignedRoleArr.value.map(item => item.id);
-    let assignRoleData = {
+    const assignRoleIds = assignedRoleArr.value.map(item => {
+        return item.id as number;
+    });
+    let assignRoleData:AssignRoleData = {
         userId: userForm.value.id as number,
-        roleIdList: assignRoleIds as number[]
+        roleIdList: assignRoleIds
     }
     let result = await reqAssignRoles(assignRoleData);
     if (result.code === 200) {
@@ -309,6 +311,42 @@ const handleCheckedCitiesChange = (value: RoleData[]) => {
     const checkedCount = value.length
     checkAll.value = checkedCount === allRoleArr.value.length
     isIndeterminate.value = checkedCount > 0 && checkedCount < allRoleArr.value.length
+}
+
+
+
+
+
+
+const deleteUser = async(id: number) => {
+    let result = await reqDeleteUser(id);
+    if(result.code == 200){
+        ElMessage.success('删除成功')
+    }else{
+        ElMessage.error('删除失败');
+    }
+    getUserList(userList.value.length>1?pagination.currentPage:pagination.currentPage-1);
+}
+
+let multipleSelection = ref<User[]>([]);
+
+const handleSelectionChange = (val: User[]) => {
+    multipleSelection.value = val
+}
+
+const batchDeleteUser = async() => {
+
+    if(multipleSelection.value.length == 0){
+        ElMessage.warning('请选择要删除的数据');
+        return;
+    }
+    let result = await reqBatchDeleteUser(multipleSelection.value.map(item=>{return item.id as number}));
+    if(result.code == 200){
+        ElMessage.success('删除成功')
+    }else{
+        ElMessage.error('删除失败');
+    }
+    getUserList(userList.value.length>1?pagination.currentPage:pagination.currentPage-1);
 }
 </script>
 <style scoped lang="scss">

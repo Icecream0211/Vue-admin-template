@@ -8,6 +8,7 @@ enum API {
    ADD_USER_URL = '/admin/acl/user/save',
    UPDATE_USER_URL = '/admin/acl/user/update',
    DELETE_USER_URL = '/admin/acl/user/remove/',
+   BATCH_REMOVE_USER_URL = '/admin/acl/user/batchRemove',
    ALL_ROLE_CANASSIGN_URL = '/admin/acl/user/toAssign/',
    ASSIGN_ROLE_URL = '/admin/acl/user/doAssignRole/',
 
@@ -51,3 +52,10 @@ export const reqUserAllRole = (userId:number) => request.get<any, AllRoleRespons
 
 
 export const reqAssignRoles = (data: AssignRoleData) => request.post<any, any>(API.DO_ASSIGN_USER_ROLE_URL, data);
+
+
+
+export const reqDeleteUser = (id: number) => request.delete<any, any>(API.DELETE_USER_URL + `${id}`);
+
+
+export const reqBatchDeleteUser = (data: number[])=>request.delete<any, any>(API.BATCH_REMOVE_USER_URL,{data})
