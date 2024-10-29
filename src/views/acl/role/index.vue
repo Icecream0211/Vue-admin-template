@@ -59,13 +59,31 @@
 
 
 
+    <el-drawer v-model="drawerVisiable">
+        <template #header>
+            <h4>菜单选择</h4>
+        </template>
+        <template #default>
+            <el-tree ref="treeRef" style="max-width: 600px" :data="menuArr" show-checkbox node-key="id" default-expand-all
+                :default-checked-keys="checkedIdArr" :props="defaultProps" />
+        </template>
+        <template #footer>
+            <div style="flex: auto">
+                <el-button @click="drawCancelClick">取消</el-button>
+                <el-button type="primary" @click="drawConfirmClick">确定</el-button>
+            </div>
+        </template>
+    </el-drawer>
+
+
+
+
 </template>
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue'
-import { reqRoleList, reqAddRole,reqDeleteRole,reqAddOrUpdateRole } from '@/api/acl/role/index'
-import { RoleListResponse, Role } from '@/api/acl/role/type'
+import { ref, reactive, onMounted, nextTick, computed } from 'vue'
+import { reqRoleList, reqAddRole, reqDeleteRole, reqAddOrUpdateRole, reqAllPermission,reqDoAssignPermission } from '@/api/acl/role/index'
+import { RoleListResponse, Role, MenuResponse, MeunData,AclSetRequestData } from '@/api/acl/role/type'
 import useLayoutSettingStore from '@/store/modules/setting';
-
 
 
 
@@ -91,7 +109,7 @@ const handleSizeChange = (val: number) => {
     getRoleList();
 };
 
-
+let drawerVisiable = ref(false);
 
 
 onMounted(() => {
@@ -146,7 +164,7 @@ const confirmAddOrUpdateRole = async () => {
 }
 
 const validateRoleName = (rule: any, value: string, callback: any) => {
-    if (value && value.trim().length >2) {
+    if (value && value.trim().length > 2) {
         callback();
     } else {
         return callback(new Error('角色名不能为空,且最少2位'));
@@ -154,7 +172,7 @@ const validateRoleName = (rule: any, value: string, callback: any) => {
 }
 
 const rules = {
-    roleName: [{ required: true,validator:validateRoleName, trigger: 'blur' }],
+    roleName: [{ required: true, validator: validateRoleName, trigger: 'blur' }],
 }
 
 
@@ -164,16 +182,85 @@ const deleteRole = async (row: Role) => {
     if (result.code == 200) {
         ElMessage.success('删除成功');
         getRoleList();
-    }else{
+    } else {
         ElMessage.error('删除失败');
     }
 }
 
 
 const updateRole = async (row: Role) => {
-    Object.assign(roleForm,row);
+    Object.assign(roleForm, row);
     dialogFormVisible.value = true;
 }
+
+
+let menuArr = ref<MeunData[]>([]);
+
+let checkedIdArr = ref<number[]>([]);
+
+const assignPermission = async (row: Role) => {
+    checkedIdArr.value = [];
+    menuArr.value = [];
+    Object.assign(roleForm, row);
+    let result: MenuResponse = await reqAllPermission(row.id as number);
+
+    if (result.code === 200) {
+        drawerVisiable.value = true;
+        menuArr.value = result.data;
+        filterSelectArr(menuArr.value, checkedIdArr.value);
+    }
+
+}
+
+const drawCancelClick = () => {
+    drawerVisiable.value = false;
+}
+
+let treeRef = ref();
+const drawConfirmClick = async () => {
+
+    let arr1:number[] = treeRef.value.getCheckedKeys();
+    let arr2:number[] = treeRef.value.getHalfCheckedKeys();
+
+    checkedIdArr.value = [...arr1, ...arr2];
+    console.log(checkedIdArr.value);
+    let requestData:AclSetRequestData = {
+        permissionIdList: checkedIdArr.value,
+        roleId: roleForm.id
+    }
+
+
+    let result = await reqDoAssignPermission(requestData);
+    if (result.code === 200) {
+        ElMessage.success("分配权限成功");
+        drawerVisiable.value = false;
+        window.location.reload();
+    } else {
+        ElMessage.error("分配权限失败");
+    }
+
+}
+
+
+const defaultProps = {
+    children: 'children',
+    label: 'name',
+}
+
+
+const filterSelectArr = (dataArr: MeunData[], checkedIdArr: number[]) => {
+    if (dataArr.length == 0) return;
+    dataArr.forEach(item => {
+        if (item.children && item.children.length > 0) {
+            filterSelectArr(item.children, checkedIdArr);
+        } else {
+            if (item.level == 4 && item.select) {
+                checkedIdArr.push(item.id);
+            }
+        }
+    });
+}
+
 </script>
 <style scoped lang="scss">
 .search_form {

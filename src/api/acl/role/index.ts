@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { RoleListResponse ,Role} from './type'
+import type { RoleListResponse ,Role,MenuResponse,AclSetRequestData} from './type'
 
 
 
@@ -8,6 +8,10 @@ enum API {
     ADD_ROLE_URL = '/admin/acl/role/save',
     DELETE_ROLE_URL = '/admin/acl/role/remove/',
     UPDATE_ROLE_URL = '/admin/acl/role/update',
+
+    ALLPERMISSION_URL = '/admin/acl/permission/toAssign/',
+
+    SETPERMISSION_URL = '/admin/acl/permission/doAssignAcl',
 
 }
 
@@ -40,3 +44,10 @@ export const reqUpdateRole = (role: Role) => request.put<any, any>(API.UPDATE_RO
 export const reqAddOrUpdateRole = (role: Role) =>{
     return role.id ? reqUpdateRole(role) : reqAddRole(role);
 }
+
+
+
+export const reqAllPermission = (roleId:number|string) => request.get<any, MenuResponse>(API.ALLPERMISSION_URL+`${roleId}`);
+
+export const reqDoAssignPermission = (data:AclSetRequestData) => request.post<any, any>(API.SETPERMISSION_URL, data);
+

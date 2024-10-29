@@ -25,3 +25,28 @@ export interface Role {
     updateTime?: string,
     createTime?: string
 }
+
+export interface MeunData{
+    id:number,
+    createTime: string,
+    updateTime: string,
+    pid: number,
+    name: string,
+    code: string,
+    toCode: string,
+    type: number,
+    status: null,
+    level: number,
+    children?: MeunData[],
+    select: boolean
+}
+
+export interface MenuResponse extends ResponseData {
+  data: MeunData[]
+}
+
+
+export interface AclSetRequestData{
+  roleId:number|string,
+  permissionIdList:number[]
+}
