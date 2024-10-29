@@ -6,15 +6,22 @@ export interface ResponseData {
 
 
 export interface RoleListResponse extends ResponseData {
-    data: Role[]
+    data:{
+        records: Role[],
+        total: number,
+        size: number,
+        current: number,
+        searchCount: boolean,
+        pages: number
+    }
 }
 
 
 export interface Role {
     id?: number | string,
     roleName: string,
-    roleDesc: string,
-    remark: null | string
-    updateTime: string,
-    createTime: string
+    roleDesc?: string,
+    remark?: null | string
+    updateTime?: string,
+    createTime?: string
 }
