@@ -12,7 +12,7 @@
     </el-card>
     <el-card style="margin:10px 0">
         <el-button type="primary" icon="Plus" size="small" @click="addUser">添加</el-button>
-        <el-button type="danger" icon="Delete" size="small" @click="batchDeleteUser">批量删除</el-button>
+        <el-button type="danger" icon="Delete" :disabled="!multipleSelection.length" size="small" @click="batchDeleteUser">批量删除</el-button>
         <el-table :data="userList" border style="margin: 10px 0px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="80" />
             <el-table-column prop="id" label="#" width="80" align="center" type="index" />
