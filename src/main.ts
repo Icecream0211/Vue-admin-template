@@ -12,9 +12,12 @@ import 'virtual:svg-icons-register'
 // 引入自定义插件对象：注册整个项目全局组件
 import globalComponent from '@/components/index'
 import 'element-plus/theme-chalk/el-notification.css'
+
 import '@/styles/index.scss'
 import router from './router'
 import pinia from './store'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
 
 const app = createApp(App)
 app.use(globalComponent)
