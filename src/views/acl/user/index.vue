@@ -1,12 +1,12 @@
 <template>
     <el-card>
-        <el-form inline :inline="true" class="search_form">
+        <el-form inline :inline="true" class="search_form" ref="searchForm">
             <el-form-item label="用户名:">
-                <el-input placeholder="请输入用户名" v-model="searchObj.username" />
+                <el-input placeholder="请输入用户名" v-model="keyWord" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getUserList">查询</el-button>
-                <el-button type="default">重置</el-button>
+                <el-button type="primary" :disabled="!keyWord"  @click="getUserList">查询</el-button>
+                <el-button type="default" @click="clearinput">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -112,15 +112,13 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-
+import useLayoutSettingStore from '@/store/modules/setting'
 import { reqUserList, reqAddOrUpdateUser,reqUserAllRole,reqAssignRoles,reqDeleteUser,reqBatchDeleteUser } from '@/api/acl/user'
 import { UserSearch, UserListResponse, User, AllRoleResponseData, RoleData,AssignRoleData } from '@/api/acl/user/type.ts'
 import type { FormInstance } from 'element-plus'
 import { nextTick } from 'vue';
-let searchObj = ref<UserSearch>({
-    username: '',
-    name: ''
-});
+
+let keyWord = ref('');
 
 let pagination = reactive({
     currentPage: 1,
@@ -133,6 +131,12 @@ onMounted(() => {
 })
 
 let userList = ref<User[]>([])
+
+let layoutSettingStore = useLayoutSettingStore();
+const clearinput = () => {
+    console.log(1111111111);
+    layoutSettingStore.changeRefresh(!layoutSettingStore.refresh);
+}
 
 
 
@@ -183,8 +187,7 @@ let rules = reactive({
 });
 
 const getUserList = async (page = 1) => {
-    console.log(searchObj.value)
-    let result = await reqUserList(pagination.currentPage, pagination.pageSize, searchObj.value);
+    let result = await reqUserList(pagination.currentPage, pagination.pageSize, keyWord.value);
     if (result.code === 20000 || result.code === 200) {
         pagination.currentPage = result.data.current;
         pagination.total = result.data.total;

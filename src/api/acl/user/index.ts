@@ -17,16 +17,11 @@ enum API {
 
 
 
-export const reqUserList = (page: number, limit: number, searchObj: UserSearch) => {
-    console.log(page,limit,searchObj)
+export const reqUserList = (page: number, limit: number,keyword:string) => {
     let reqUrl = API.USER_LIST_URL + `${page}/${limit}`;
-    if(searchObj){
+    if(keyword&&keyword.trim().length>0){
         reqUrl += '?';
-        if(searchObj.name&&searchObj.name.trim().length>0){
-            reqUrl += `name=${searchObj.name}`
-        }
-        if(searchObj.username&&searchObj.username.trim().length>0)
-        reqUrl += `username=${searchObj.username}`
+        reqUrl += `username=${keyword}`
     }
 
     return request.get<any, UserListResponse>(reqUrl);
