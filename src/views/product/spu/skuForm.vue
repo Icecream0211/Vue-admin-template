@@ -92,8 +92,6 @@ let saleAttr = ref<SpuSaleAttr[]>([]);
 
 let imgArr = ref<SpuImage[]>([]);
 const initSkuData = async (c1Id: number, c2Id: number, c3Id: number, spu: any) => {
-    console.log(c1Id, c2Id, c3Id, spu);
-
     skuParams.category3Id = c3Id;
     skuParams.spuId = spu.id;
     skuParams.tmId = spu.tmId;

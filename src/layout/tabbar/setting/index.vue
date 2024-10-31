@@ -53,7 +53,6 @@ const refreshMain = () => {
 
 const fullScreen = () => {
     let fullScreen = document.fullscreenElement;
-    console.log(fullScreen);
     if (!fullScreen) {
         document.documentElement.requestFullscreen();
     } else {
@@ -80,7 +79,6 @@ const handleDarkMode = () => {
 
 
 const colorChange = () => {
-    console.log(111111111111111)
     let html = document.documentElement;
     html.style.setProperty('--el-color-primary', color.value);
 }

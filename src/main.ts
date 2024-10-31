@@ -24,4 +24,6 @@ app.use(globalComponent)
 app.use(router)
 app.use(pinia)
 import './permisstion.ts'
+import { isHasButton } from './directive/has.ts'
+isHasButton(app);
 app.mount('#app')

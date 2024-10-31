@@ -27,7 +27,6 @@ export const reqRoleList = (page: number, limit: number, roleName: string) => {
         url += '?';
         url += `roleName=${roleName}`
     }
-    console.log(url,roleName);
     return request.get<any, RoleListResponse>(url);
 }
 

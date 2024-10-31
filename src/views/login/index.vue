@@ -29,7 +29,6 @@ const loginForm = reactive({
 
 const login = async () => {
   let result = await loginForms.value.validate()
-  console.log(result)
   loading.value = true
   try {
     await useStore.userLogin(loginForm)
@@ -68,7 +67,6 @@ const login = async () => {
 
 
 const validatorUserName = (rule: any, value: any, callBack: any) => {
-  console.log(rule, value)
   if (value.trim().length <= 0) {
     callBack(new Error('用户名必填'))
   }

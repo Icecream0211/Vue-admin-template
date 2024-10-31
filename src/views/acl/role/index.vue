@@ -223,7 +223,6 @@ const drawConfirmClick = async () => {
     let arr2:number[] = treeRef.value.getHalfCheckedKeys();
 
     checkedIdArr.value = [...arr1, ...arr2];
-    console.log(checkedIdArr.value);
     let requestData:AclSetRequestData = {
         permissionIdList: checkedIdArr.value,
         roleId: roleForm.id

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card class="box-card">
-            <el-button type="primary" icon="Plus" size="default" @click="addTrademark">
+            <el-button type="primary" icon="Plus" size="default" v-has="`btn.Trademark.add`" @click="addTrademark">
                 添加品牌
             </el-button>
             <!-- prop默认是用的是div，可以使用插槽-->
@@ -80,15 +80,9 @@ let tradeMarkParams = reactive<TradeMark>({
 const getHashTradeMark = async (pager = 1) => {
     pageNo.value = pager;
     let result: TradeMarkResponseData = await reqHashTradeMark(pageNo.value, limit.value);
-
-    console.log(result)
-
     if (result.code === 200) {
         total.value = result.data.total;
         tradeMarkArr.value = result.data.records;
-        if (result.data.records.length > 0) {
-            console.log(result.data.records[0].tmName)
-        }
     }
 
 }
@@ -107,7 +101,6 @@ onMounted(() => {
     getHashTradeMark()
 })
 const validatorTmName = (rule: any, value: any, callback: any) => {
-    console.log("表单名称校验", rule, value)
     if (!value || value.trim().length <= 0) {
         callback(new Error('品牌名称不能为空'))
     } else if (value.trim().length <= 2) {
@@ -118,7 +111,6 @@ const validatorTmName = (rule: any, value: any, callback: any) => {
 };
 
 const validateLogoUrl = (rule: any, value: any, callback: any) => {
-    console.log("url数据", value);
     if (value && value.trim().length > 0) {
         callback();
     } else {
@@ -153,7 +145,6 @@ const changeTradeMark = (row: TradeMark) => {
         tradeForm.value.clearValidate();
     });
     dialogFormVisible.value = true;
-    console.log(row);
     //es6语法
     Object.assign(tradeMarkParams, row)
     //tradeMarkParams.id = row.id;
@@ -175,9 +166,7 @@ const dialogCancel = () => {
 }
 const dialogConfirm = async () => {
     await tradeForm.value.validate();
-    console.log("校验通过", tradeMarkParams);
     let result = await reqAddOrUpdateTradeMark(tradeMarkParams);
-    console.log(result);
     if (result.code === 200) {
         if (tradeMarkParams.id) {
             ElMessage.success('修改品牌成功');

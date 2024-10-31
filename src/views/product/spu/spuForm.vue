@@ -138,7 +138,6 @@ const initHasSpuData = async (spu: SpuData) => {
     if (result.code === 200) {
         trademarkList.value = result.data
     }
-    console.log(result)
     let result1: SpuImageListResponse = await reqHasSpuImageList(spu.id as number);
     if (result1.code === 200) {
         spuImageList.value = result1.data.map((item) => { return { ...item, name: item.imgName, url: item.imgUrl } });
@@ -238,7 +237,6 @@ const saveSaleAttr = async () => {
     });
 
     spuParams.value.spuSaleAttrList = saleAttr.value;
-    console.log(spuParams.value);
 
     let result = await reqAddOrUpdateSpu(spuParams.value);
     if (result.code === 200) {

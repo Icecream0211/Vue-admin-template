@@ -119,7 +119,6 @@ onBeforeUnmount(() => {
 })
 
 const getAttrList = async (c1Id: number | string, c2Id: number | string, c3Id: number | string) => {
-    console.log("获取属性列表")
     const result = await reqAllAttrInfo(c1Id, c2Id, c3Id)
 
     if (result.code === 200) {

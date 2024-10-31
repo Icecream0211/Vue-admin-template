@@ -38,7 +38,8 @@ let useUserStore = defineStore('User', {
       token: GET_TOKEN()!,
       menuRoutes: constantRoute,
       username: '',
-      avatar: ''
+      avatar: '',
+      buttons:[]
     }
   },
   // 异步|逻辑的地方
@@ -46,7 +47,6 @@ let useUserStore = defineStore('User', {
     //用户登录方法
     async userLogin(data: any) {
       let res: LoginResponseData = await reqLogin(data)
-      console.log("login--resp", res)
       // success=>token
       // error=>error.message
       if (res.code === 200) {
@@ -60,7 +60,6 @@ let useUserStore = defineStore('User', {
     },
     async userLogout() {
       let result = await reqLogout();
-      console.log("退出登录", result);
       if (result.code === 200) {
         this.token = '';
         this.username = '';
@@ -72,10 +71,10 @@ let useUserStore = defineStore('User', {
     },
     async getUserInfo() {
       let result: UserInfoResponseData = await reqUserInfo();
-      console.log("获取用户信息结果", result);
       if (result.code === 200) {
         this.username = result.data.name;
         this.avatar = result.data.avatar;
+        this.buttons = result.data.buttons;
         let userAsyncRoute = filterAsyncRoute(cloneDeep(asyncRoutes), result.data.routes);
         this.menuRoutes = [...constantRoute, ...anyRoutes, ...userAsyncRoute];
         [...userAsyncRoute,...anyRoutes].forEach(item => {

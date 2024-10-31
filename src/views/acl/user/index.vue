@@ -11,7 +11,7 @@
         </el-form>
     </el-card>
     <el-card style="margin:10px 0">
-        <el-button type="primary" icon="Plus" size="small" @click="addUser">添加</el-button>
+        <el-button type="primary" icon="Plus" size="small"  @click="addUser">添加</el-button>
         <el-button type="danger" icon="Delete" :disabled="!multipleSelection.length" size="small" @click="batchDeleteUser">批量删除</el-button>
         <el-table :data="userList" border style="margin: 10px 0px;" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="80" />
@@ -134,7 +134,6 @@ let userList = ref<User[]>([])
 
 let layoutSettingStore = useLayoutSettingStore();
 const clearinput = () => {
-    console.log(1111111111);
     layoutSettingStore.changeRefresh(!layoutSettingStore.refresh);
 }
 

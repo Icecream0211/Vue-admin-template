@@ -139,7 +139,6 @@ let dialogVisible = ref(false);
 
 const findSku = async (row: SpuData) => {
     let result = await reqSkuList(row.id as number);
-    console.log(result);
     if (result.code == 200) {
         skuArr.value = result.data;
         dialogVisible.value = true;

@@ -41,7 +41,6 @@ const $router = useRouter();
 defineProps(["menuList"])
 
 const goRoute = (vc:any)=>{
-    console.log(vc.index)
     $router.push(vc.index)
 }
 
