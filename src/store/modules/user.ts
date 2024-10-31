@@ -9,8 +9,27 @@ import { defineStore } from 'pinia'
 import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
 import type { UserState } from './types/types'
 import { SET_TOKEN, GET_TOKEN, REMOVE_TOKEN } from '@/utils/token'
-import { constantRoute } from '@/router/routes'
-import {LoginResponseData,UserInfoResponseData}  from '@/api/user/type'
+import { constantRoute, anyRoutes, asyncRoutes } from '@/router/routes'
+import { LoginResponseData, UserInfoResponseData } from '@/api/user/type'
+import router from '@/router'
+
+//@ts-ignore
+import cloneDeep from 'lodash/cloneDeep'
+
+
+function filterAsyncRoute(asyncRoutes: any, routes: any) {
+  return asyncRoutes.filter(
+    (item: any) => {
+      if (routes.includes(item.name)) {
+        if (item.children && item.children.length > 0) {
+          item.children = filterAsyncRoute(item.children, routes);
+        }
+        return true;
+      }
+    }
+  )
+}
+
 
 let useUserStore = defineStore('User', {
   // 小仓库存储数据的地方
@@ -20,7 +39,6 @@ let useUserStore = defineStore('User', {
       menuRoutes: constantRoute,
       username: '',
       avatar: ''
-
     }
   },
   // 异步|逻辑的地方
@@ -28,7 +46,7 @@ let useUserStore = defineStore('User', {
     //用户登录方法
     async userLogin(data: any) {
       let res: LoginResponseData = await reqLogin(data)
-      console.log("login--resp",res)
+      console.log("login--resp", res)
       // success=>token
       // error=>error.message
       if (res.code === 200) {
@@ -43,7 +61,7 @@ let useUserStore = defineStore('User', {
     async userLogout() {
       let result = await reqLogout();
       console.log("退出登录", result);
-      if(result.code === 200){
+      if (result.code === 200) {
         this.token = '';
         this.username = '';
         this.avatar = '';
@@ -53,11 +71,16 @@ let useUserStore = defineStore('User', {
       return Promise.reject(new Error(result.message))
     },
     async getUserInfo() {
-      let result:UserInfoResponseData = await reqUserInfo();
+      let result: UserInfoResponseData = await reqUserInfo();
       console.log("获取用户信息结果", result);
       if (result.code === 200) {
         this.username = result.data.name;
         this.avatar = result.data.avatar;
+        let userAsyncRoute = filterAsyncRoute(cloneDeep(asyncRoutes), result.data.routes);
+        this.menuRoutes = [...constantRoute, ...anyRoutes, ...userAsyncRoute];
+        [...userAsyncRoute,...anyRoutes].forEach(item => {
+          router.addRoute(item);
+        });
         return 'ok';
       } else {
         return Promise.reject(result.message);

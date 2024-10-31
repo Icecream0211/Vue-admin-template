@@ -27,7 +27,11 @@ router.beforeEach(async (to, from, next) => {
                 try {
                     await userStore.getUserInfo();
                     console.log("获取用户信息成功")
-                    next();
+                    /**
+                     * 异步路由没加载完，使用next()会造成页面刷新的时候，重新获取用户信息是页面白屏。
+                     * 使用 next({...to}),可以在路由加载完成后，再跳转
+                     */
+                    next({...to});
                 } catch (error) {
                     await userStore.userLogout();
                     next({ path: '/login', query: { redirect: to.path } });

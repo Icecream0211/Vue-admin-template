@@ -1,4 +1,6 @@
-
+/**
+ * 常量路由   无论哪个用户登录，都可以访问到的路由
+ */
 export const constantRoute = [
   {
     path: '/login',
@@ -7,10 +9,10 @@ export const constantRoute = [
     meta: {
       title: '登录',
       hidden: true,
-      icon:"Promotion"
+      icon: "Promotion"
     }
   },
-  
+
   {
     path: '/',
     component: () => import('@/layout/index.vue'),
@@ -18,7 +20,7 @@ export const constantRoute = [
     meta: {
       title: '',
       hidden: false,
-      icon:"Avatar"
+      icon: "Avatar"
     },
     redirect: '/home',
     children: [
@@ -29,7 +31,7 @@ export const constantRoute = [
         meta: {
           title: '首页',
           hidden: false,
-          icon:"HomeFilled"
+          icon: "HomeFilled"
         },
       }
     ]
@@ -41,9 +43,27 @@ export const constantRoute = [
     meta: {
       title: '大屏',
       hidden: false,
-      icon:"Platform"
+      icon: "Platform"
     }
   },
+
+  {
+    path: '/404',
+    component: () => import('@/views/404/index.vue'),
+    name: '404',
+    meta: {
+      title: '404',
+      hidden: true,
+      icon: "Error"
+    }
+  }
+];
+
+
+/**
+ * 动态路由
+ */
+export const asyncRoutes = [
   {
     path: '/acl',
     component: () => import('@/layout/index.vue'),
@@ -52,9 +72,9 @@ export const constantRoute = [
     meta: {
       title: '权限管理',
       hidden: false,
-      icon:"Lock"
+      icon: "Lock"
     },
-    children:[
+    children: [
       {
         path: '/acl/user',
         component: () => import('@/views/acl/user/index.vue'),
@@ -62,7 +82,7 @@ export const constantRoute = [
         meta: {
           title: '用户管理',
           hidden: false,
-          icon:"User"
+          icon: "User"
         }
       },
       {
@@ -72,7 +92,7 @@ export const constantRoute = [
         meta: {
           title: '角色管理',
           hidden: false,
-          icon:"UserFilled"
+          icon: "UserFilled"
         }
       },
       {
@@ -82,7 +102,7 @@ export const constantRoute = [
         meta: {
           title: '菜单管理',
           hidden: false,
-          icon:"List"
+          icon: "List"
         }
       }
     ]
@@ -95,9 +115,9 @@ export const constantRoute = [
     meta: {
       title: '商品管理',
       hidden: false,
-      icon:"Goods"
+      icon: "Goods"
     },
-    children:[
+    children: [
       {
         path: '/product/attr',
         component: () => import('@/views/product/attr/index.vue'),
@@ -105,7 +125,7 @@ export const constantRoute = [
         meta: {
           title: '属性管理',
           hidden: false,
-          icon:"ChromeFilled"
+          icon: "ChromeFilled"
         }
       },
       {
@@ -115,7 +135,7 @@ export const constantRoute = [
         meta: {
           title: '品牌管理',
           hidden: false,
-          icon:"ShoppingCartFull"
+          icon: "ShoppingCartFull"
         }
       },
       {
@@ -125,7 +145,7 @@ export const constantRoute = [
         meta: {
           title: 'SPU管理',
           hidden: false,
-          icon:"Apple"
+          icon: "Apple"
         }
       },
       {
@@ -135,21 +155,18 @@ export const constantRoute = [
         meta: {
           title: 'SKU管理',
           hidden: false,
-          icon:"Orange"
+          icon: "Orange"
         }
       }
     ]
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/404/index.vue'),
-    name: '404',
-    meta: {
-      title: '404',
-      hidden: true,
-      icon:"Error"
-    }
-  },
+  }
+
+]
+
+/**
+ * 任意路由
+ */
+export const anyRoutes = [
   {
     path: '/:pathMatch(.*)*',
     redirect: '/404',
@@ -157,7 +174,7 @@ export const constantRoute = [
     meta: {
       title: '任意路由',
       hidden: true,
-      icon:"Error"
+      icon: "Error"
     }
-  },
+  }
 ]
